@@ -48,6 +48,25 @@ resource "aws_internet_gateway" "igw_main_asg" {
     Name = "IGW-MAIN-ASG"
   }
 }
+### ************ NAT gateway ***************
+resource "aws_eip" "nat_gateway" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "nat_main_asg" {
+  allocation_id = aws_eip.nat_gateway.id
+  subnet_id     = aws_subnet.prisub_main_asg.id
+
+  tags = {
+    Name = "NAT-MAIN-ASG"
+  }
+
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.igw_main_asg]
+}
+
+
 
 ### ************ ROUTE TABLE RT-MAIN-ASG ***************
 
