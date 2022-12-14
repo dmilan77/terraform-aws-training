@@ -109,6 +109,13 @@ resource "aws_security_group" "sg_pub_main_asg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    description = "security for public subnet icmp"
+    from_port   = -1
+    to_port     = -1
+    protocol    = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port        = 0
@@ -135,7 +142,13 @@ resource "aws_security_group" "sg_pri_main_asg" {
     protocol        = "tcp"
     security_groups = [aws_security_group.sg_pub_main_asg.id]
   }
-
+  ingress {
+    description     = "security for public subnet icmp"
+    from_port       = -1
+    to_port         = -1
+    protocol        = "icmp"
+    security_groups = [aws_security_group.sg_pub_main_asg.id]
+  }
   egress {
     from_port        = 0
     to_port          = 0
