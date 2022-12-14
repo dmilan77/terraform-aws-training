@@ -1,3 +1,9 @@
+locals {
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.18.1"
@@ -14,10 +20,7 @@ module "vpc" {
   create_igw                    = true
   manage_default_security_group = true
 
-  tags = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
+  tags = local.tags
 }
 
 module "security_group_main_pub" {
@@ -32,10 +35,7 @@ module "security_group_main_pub" {
   ingress_rules       = ["ssh-tcp", "all-icmp", "all-ipv6-icmp"]
   egress_rules        = ["all-all"]
 
-  tags = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
+  tags = local.tags
 }
 
 
@@ -53,10 +53,7 @@ module "ec2_instance_public" {
   vpc_security_group_ids      = [module.security_group_main_pub.security_group_id]
   subnet_id                   = module.vpc.public_subnets[0]
 
-  tags = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
+  tags = local.tags
 }
 
 module "security_group_main_pri" {
@@ -92,10 +89,7 @@ module "security_group_main_pri" {
   # ingress_rules = ["ssh-tcp", "all-icmp", "all-ipv6-icmp"]
   egress_rules = ["all-all"]
 
-  tags = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
+  tags = local.tags
 }
 
 module "ec2_instance_private" {
@@ -112,8 +106,5 @@ module "ec2_instance_private" {
   vpc_security_group_ids      = [module.security_group_main_pri.security_group_id]
   subnet_id                   = module.vpc.private_subnets[0]
 
-  tags = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
+  tags = local.tags
 }
